@@ -1,0 +1,65 @@
+name: flutter_motion_sensors
+description: Device motion and orientation-based animations for Flutter. Supports iOS, Android, Web, Windows, macOS, and Linux with WASM compatibility.
+version: 0.0.2
+homepage: https://github.com/Dhia-Bechattaoui/flutter_motion_sensors
+repository: https://github.com/Dhia-Bechattaoui/flutter_motion_sensors
+issue_tracker: https://github.com/Dhia-Bechattaoui/flutter_motion_sensors/issues
+documentation: https://github.com/Dhia-Bechattaoui/flutter_motion_sensors#readme
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sensors_plus: ^6.1.2
+  plugin_platform_interface: ^2.1.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  test: ^1.26.2
+  mockito: ^5.4.4
+  build_runner: ^2.4.7
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.flutter_motion_sensors
+        pluginClass: FlutterMotionSensorsPlugin
+      ios:
+        pluginClass: FlutterMotionSensorsPlugin
+      web:
+        pluginClass: FlutterMotionSensorsWeb
+        fileName: flutter_motion_sensors_web.dart
+      windows:
+        pluginClass: FlutterMotionSensorsPlugin
+      macos:
+        pluginClass: FlutterMotionSensorsPlugin
+      linux:
+        pluginClass: FlutterMotionSensorsPlugin
+
+  # To add assets to your plugin package, add an "assets" section here like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+  #
+  # For details regarding assets in packages, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  #
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # To add custom fonts to your plugin package, add a "fonts" section here like this:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #
+  # For details regarding fonts in packages, see
+  # https://flutter.dev/custom-fonts/#from-packages
