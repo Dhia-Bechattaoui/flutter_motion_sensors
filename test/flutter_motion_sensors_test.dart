@@ -4,8 +4,9 @@ import 'package:flutter_motion_sensors/flutter_motion_sensors.dart';
 
 void main() {
   group('flutter_motion_sensors', () {
-    testWidgets('AccelerometerBuilder builds correctly',
-        (WidgetTester tester) async {
+    testWidgets('AccelerometerBuilder builds correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: AccelerometerBuilder(
@@ -21,8 +22,9 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('GyroscopeBuilder builds correctly',
-        (WidgetTester tester) async {
+    testWidgets('GyroscopeBuilder builds correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: GyroscopeBuilder(
@@ -38,8 +40,9 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('MagnetometerBuilder builds correctly',
-        (WidgetTester tester) async {
+    testWidgets('MagnetometerBuilder builds correctly', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: MagnetometerBuilder(
@@ -71,8 +74,9 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('MotionAnimationBuilder with custom sensor types',
-        (WidgetTester tester) async {
+    testWidgets('MotionAnimationBuilder with custom sensor types', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: MotionAnimationBuilder(
@@ -94,8 +98,9 @@ void main() {
       expect(find.text('Gyro: 0.0'), findsOneWidget);
     });
 
-    testWidgets('MotionAnimationBuilder with manual control',
-        (WidgetTester tester) async {
+    testWidgets('MotionAnimationBuilder with manual control', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: MotionAnimationBuilder(
@@ -129,12 +134,7 @@ void main() {
   group('Sensor Data Models', () {
     test('AccelerometerData creation and properties', () {
       final now = DateTime.now();
-      final data = AccelerometerData(
-        x: 1.0,
-        y: 2.0,
-        z: 3.0,
-        timestamp: now,
-      );
+      final data = AccelerometerData(x: 1.0, y: 2.0, z: 3.0, timestamp: now);
 
       expect(data.x, 1.0);
       expect(data.y, 2.0);
@@ -144,12 +144,7 @@ void main() {
 
     test('AccelerometerData copyWith', () {
       final now = DateTime.now();
-      final data = AccelerometerData(
-        x: 1.0,
-        y: 2.0,
-        z: 3.0,
-        timestamp: now,
-      );
+      final data = AccelerometerData(x: 1.0, y: 2.0, z: 3.0, timestamp: now);
 
       final newData = data.copyWith(x: 5.0);
       expect(newData.x, 5.0);
@@ -160,12 +155,7 @@ void main() {
 
     test('GyroscopeData creation and properties', () {
       final now = DateTime.now();
-      final data = GyroscopeData(
-        x: 0.1,
-        y: 0.2,
-        z: 0.3,
-        timestamp: now,
-      );
+      final data = GyroscopeData(x: 0.1, y: 0.2, z: 0.3, timestamp: now);
 
       expect(data.x, 0.1);
       expect(data.y, 0.2);
@@ -175,12 +165,7 @@ void main() {
 
     test('MagnetometerData creation and properties', () {
       final now = DateTime.now();
-      final data = MagnetometerData(
-        x: 10.0,
-        y: 20.0,
-        z: 30.0,
-        timestamp: now,
-      );
+      final data = MagnetometerData(x: 10.0, y: 20.0, z: 30.0, timestamp: now);
 
       expect(data.x, 10.0);
       expect(data.y, 20.0);
