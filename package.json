@@ -1,0 +1,14 @@
+{
+  "name": "flutter_motion_sensors",
+  "version": "0.1.0",
+  "description": "Device motion and orientation-based animations for Flutter",
+  "devDependencies": {
+    "@commitlint/cli": "^18.0.0",
+    "@commitlint/config-conventional": "^18.0.0",
+    "husky": "^8.0.3"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
+
