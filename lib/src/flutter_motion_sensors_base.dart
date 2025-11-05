@@ -3,14 +3,24 @@ import 'sensor_data.dart';
 import 'platform_interface.dart';
 
 /// Main class for accessing motion sensor functionality
+///
+/// This class provides static methods to access motion sensor data
+/// including accelerometer, gyroscope, and magnetometer readings.
 class FlutterMotionSensors {
+  /// Creates a new instance of FlutterMotionSensors.
+  ///
+  /// Note: This class is primarily used for static method calls.
+  /// Instantiating it directly is not necessary.
+  FlutterMotionSensors();
+
   static const MethodChannel _channel = MethodChannel('flutter_motion_sensors');
 
   /// Check if motion sensors are available on the device
   static Future<bool> isMotionSensorAvailable() async {
     try {
-      final bool result =
-          await _channel.invokeMethod('isMotionSensorAvailable');
+      final bool result = await _channel.invokeMethod(
+        'isMotionSensorAvailable',
+      );
       return result;
     } on PlatformException {
       // Fallback to platform interface if method channel fails
@@ -21,16 +31,18 @@ class FlutterMotionSensors {
   /// Get the current accelerometer data
   static Future<AccelerometerData?> getAccelerometerData() async {
     try {
-      final Map<dynamic, dynamic>? result =
-          await _channel.invokeMethod('getAccelerometerData');
+      final Map<dynamic, dynamic>? result = await _channel.invokeMethod(
+        'getAccelerometerData',
+      );
       if (result == null) return null;
 
       return AccelerometerData(
         x: result['x']?.toDouble() ?? 0.0,
         y: result['y']?.toDouble() ?? 0.0,
         z: result['z']?.toDouble() ?? 0.0,
-        timestamp:
-            DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
       );
     } on PlatformException {
       // Fallback to platform interface if method channel fails
@@ -41,16 +53,18 @@ class FlutterMotionSensors {
   /// Get the current gyroscope data
   static Future<GyroscopeData?> getGyroscopeData() async {
     try {
-      final Map<dynamic, dynamic>? result =
-          await _channel.invokeMethod('getGyroscopeData');
+      final Map<dynamic, dynamic>? result = await _channel.invokeMethod(
+        'getGyroscopeData',
+      );
       if (result == null) return null;
 
       return GyroscopeData(
         x: result['x']?.toDouble() ?? 0.0,
         y: result['y']?.toDouble() ?? 0.0,
         z: result['z']?.toDouble() ?? 0.0,
-        timestamp:
-            DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
       );
     } on PlatformException {
       // Fallback to platform interface if method channel fails
@@ -61,16 +75,18 @@ class FlutterMotionSensors {
   /// Get the current magnetometer data
   static Future<MagnetometerData?> getMagnetometerData() async {
     try {
-      final Map<dynamic, dynamic>? result =
-          await _channel.invokeMethod('getMagnetometerData');
+      final Map<dynamic, dynamic>? result = await _channel.invokeMethod(
+        'getMagnetometerData',
+      );
       if (result == null) return null;
 
       return MagnetometerData(
         x: result['x']?.toDouble() ?? 0.0,
         y: result['y']?.toDouble() ?? 0.0,
         z: result['z']?.toDouble() ?? 0.0,
-        timestamp:
-            DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
       );
     } on PlatformException {
       // Fallback to platform interface if method_channel fails
@@ -81,8 +97,9 @@ class FlutterMotionSensors {
   /// Get all available motion sensor data
   static Future<MotionSensorData> getAllMotionSensorData() async {
     try {
-      final Map<dynamic, dynamic> result =
-          await _channel.invokeMethod('getAllMotionSensorData');
+      final Map<dynamic, dynamic> result = await _channel.invokeMethod(
+        'getAllMotionSensorData',
+      );
 
       return MotionSensorData(
         accelerometer: result['accelerometer'] != null
@@ -91,7 +108,8 @@ class FlutterMotionSensors {
                 y: result['accelerometer']['y']?.toDouble() ?? 0.0,
                 z: result['accelerometer']['z']?.toDouble() ?? 0.0,
                 timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    result['accelerometer']['timestamp'] ?? 0),
+                  result['accelerometer']['timestamp'] ?? 0,
+                ),
               )
             : null,
         gyroscope: result['gyroscope'] != null
@@ -100,7 +118,8 @@ class FlutterMotionSensors {
                 y: result['gyroscope']['y']?.toDouble() ?? 0.0,
                 z: result['gyroscope']['z']?.toDouble() ?? 0.0,
                 timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    result['gyroscope']['timestamp'] ?? 0),
+                  result['gyroscope']['timestamp'] ?? 0,
+                ),
               )
             : null,
         magnetometer: result['magnetometer'] != null
@@ -109,11 +128,13 @@ class FlutterMotionSensors {
                 y: result['magnetometer']['y']?.toDouble() ?? 0.0,
                 z: result['magnetometer']['z']?.toDouble() ?? 0.0,
                 timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    result['magnetometer']['timestamp'] ?? 0),
+                  result['magnetometer']['timestamp'] ?? 0,
+                ),
               )
             : null,
-        timestamp:
-            DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
       );
     } on PlatformException {
       // Fallback to platform interface if method channel fails
@@ -124,16 +145,17 @@ class FlutterMotionSensors {
   /// Get accelerometer events stream
   static Stream<AccelerometerData> get accelerometerEvents {
     try {
-      return const EventChannel('flutter_motion_sensors/accelerometer')
-          .receiveBroadcastStream()
-          .map((dynamic event) {
+      return const EventChannel(
+        'flutter_motion_sensors/accelerometer',
+      ).receiveBroadcastStream().map((dynamic event) {
         final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
         return AccelerometerData(
           x: data['x']?.toDouble() ?? 0.0,
           y: data['y']?.toDouble() ?? 0.0,
           z: data['z']?.toDouble() ?? 0.0,
-          timestamp:
-              DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
+          timestamp: DateTime.fromMillisecondsSinceEpoch(
+            data['timestamp'] ?? 0,
+          ),
         );
       });
     } catch (_) {
@@ -145,16 +167,17 @@ class FlutterMotionSensors {
   /// Get gyroscope events stream
   static Stream<GyroscopeData> get gyroscopeEvents {
     try {
-      return const EventChannel('flutter_motion_sensors/gyroscope')
-          .receiveBroadcastStream()
-          .map((dynamic event) {
+      return const EventChannel(
+        'flutter_motion_sensors/gyroscope',
+      ).receiveBroadcastStream().map((dynamic event) {
         final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
         return GyroscopeData(
           x: data['x']?.toDouble() ?? 0.0,
           y: data['y']?.toDouble() ?? 0.0,
           z: data['z']?.toDouble() ?? 0.0,
-          timestamp:
-              DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
+          timestamp: DateTime.fromMillisecondsSinceEpoch(
+            data['timestamp'] ?? 0,
+          ),
         );
       });
     } catch (_) {
@@ -166,16 +189,17 @@ class FlutterMotionSensors {
   /// Get magnetometer events stream
   static Stream<MagnetometerData> get magnetometerEvents {
     try {
-      return const EventChannel('flutter_motion_sensors/magnetometer')
-          .receiveBroadcastStream()
-          .map((dynamic event) {
+      return const EventChannel(
+        'flutter_motion_sensors/magnetometer',
+      ).receiveBroadcastStream().map((dynamic event) {
         final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
         return MagnetometerData(
           x: data['x']?.toDouble() ?? 0.0,
           y: data['y']?.toDouble() ?? 0.0,
           z: data['z']?.toDouble() ?? 0.0,
-          timestamp:
-              DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
+          timestamp: DateTime.fromMillisecondsSinceEpoch(
+            data['timestamp'] ?? 0,
+          ),
         );
       });
     } catch (_) {
@@ -187,9 +211,9 @@ class FlutterMotionSensors {
   /// Get motion sensor events stream
   static Stream<MotionSensorData> get motionSensorEvents {
     try {
-      return const EventChannel('flutter_motion_sensors/motion')
-          .receiveBroadcastStream()
-          .map((dynamic event) {
+      return const EventChannel(
+        'flutter_motion_sensors/motion',
+      ).receiveBroadcastStream().map((dynamic event) {
         final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
         return MotionSensorData(
           accelerometer: data['accelerometer'] != null
@@ -198,7 +222,8 @@ class FlutterMotionSensors {
                   y: data['accelerometer']['y']?.toDouble() ?? 0.0,
                   z: data['accelerometer']['z']?.toDouble() ?? 0.0,
                   timestamp: DateTime.fromMillisecondsSinceEpoch(
-                      data['accelerometer']['timestamp'] ?? 0),
+                    data['accelerometer']['timestamp'] ?? 0,
+                  ),
                 )
               : null,
           gyroscope: data['gyroscope'] != null
@@ -207,7 +232,8 @@ class FlutterMotionSensors {
                   y: data['gyroscope']['y']?.toDouble() ?? 0.0,
                   z: data['gyroscope']['z']?.toDouble() ?? 0.0,
                   timestamp: DateTime.fromMillisecondsSinceEpoch(
-                      data['gyroscope']['timestamp'] ?? 0),
+                    data['gyroscope']['timestamp'] ?? 0,
+                  ),
                 )
               : null,
           magnetometer: data['magnetometer'] != null
@@ -216,11 +242,13 @@ class FlutterMotionSensors {
                   y: data['magnetometer']['y']?.toDouble() ?? 0.0,
                   z: data['magnetometer']['z']?.toDouble() ?? 0.0,
                   timestamp: DateTime.fromMillisecondsSinceEpoch(
-                      data['magnetometer']['timestamp'] ?? 0),
+                    data['magnetometer']['timestamp'] ?? 0,
+                  ),
                 )
               : null,
-          timestamp:
-              DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
+          timestamp: DateTime.fromMillisecondsSinceEpoch(
+            data['timestamp'] ?? 0,
+          ),
         );
       });
     } catch (_) {

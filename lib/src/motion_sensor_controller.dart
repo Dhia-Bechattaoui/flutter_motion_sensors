@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'sensor_data.dart';
 import 'platform_interface.dart';
 
@@ -78,8 +79,15 @@ class MotionSensorController extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
+        // Ignore cancellation-related errors
+        if (error is PlatformException &&
+            error.code == 'error' &&
+            error.message?.contains('No active stream') == true) {
+          return;
+        }
         debugPrint('Error listening to accelerometer: $error');
       },
+      cancelOnError: false,
     );
 
     _updateListeningState();
@@ -95,8 +103,15 @@ class MotionSensorController extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
+        // Ignore cancellation-related errors
+        if (error is PlatformException &&
+            error.code == 'error' &&
+            error.message?.contains('No active stream') == true) {
+          return;
+        }
         debugPrint('Error listening to gyroscope: $error');
       },
+      cancelOnError: false,
     );
 
     _updateListeningState();
@@ -112,8 +127,15 @@ class MotionSensorController extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
+        // Ignore cancellation-related errors
+        if (error is PlatformException &&
+            error.code == 'error' &&
+            error.message?.contains('No active stream') == true) {
+          return;
+        }
         debugPrint('Error listening to magnetometer: $error');
       },
+      cancelOnError: false,
     );
 
     _updateListeningState();
@@ -132,8 +154,15 @@ class MotionSensorController extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
+        // Ignore cancellation-related errors
+        if (error is PlatformException &&
+            error.code == 'error' &&
+            error.message?.contains('No active stream') == true) {
+          return;
+        }
         debugPrint('Error listening to motion sensors: $error');
       },
+      cancelOnError: false,
     );
 
     _updateListeningState();
@@ -149,28 +178,44 @@ class MotionSensorController extends ChangeNotifier {
 
   /// Stop listening to accelerometer events
   void stopAccelerometerListening() {
-    _accelerometerSubscription?.cancel();
+    try {
+      _accelerometerSubscription?.cancel();
+    } catch (e) {
+      // Ignore cancellation errors
+    }
     _accelerometerSubscription = null;
     _updateListeningState();
   }
 
   /// Stop listening to gyroscope events
   void stopGyroscopeListening() {
-    _gyroscopeSubscription?.cancel();
+    try {
+      _gyroscopeSubscription?.cancel();
+    } catch (e) {
+      // Ignore cancellation errors
+    }
     _gyroscopeSubscription = null;
     _updateListeningState();
   }
 
   /// Stop listening to magnetometer events
   void stopMagnetometerListening() {
-    _magnetometerSubscription?.cancel();
+    try {
+      _magnetometerSubscription?.cancel();
+    } catch (e) {
+      // Ignore cancellation errors
+    }
     _magnetometerSubscription = null;
     _updateListeningState();
   }
 
   /// Stop listening to motion sensor events
   void stopMotionListening() {
-    _motionSubscription?.cancel();
+    try {
+      _motionSubscription?.cancel();
+    } catch (e) {
+      // Ignore cancellation errors
+    }
     _motionSubscription = null;
     _updateListeningState();
   }
@@ -185,7 +230,8 @@ class MotionSensorController extends ChangeNotifier {
 
   void _updateListeningState() {
     final wasListening = _isListening;
-    _isListening = _accelerometerSubscription != null ||
+    _isListening =
+        _accelerometerSubscription != null ||
         _gyroscopeSubscription != null ||
         _magnetometerSubscription != null ||
         _motionSubscription != null;

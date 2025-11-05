@@ -1,5 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:flutter/services.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+import 'package:rxdart/rxdart.dart';
 import 'sensor_data.dart';
 
 /// The interface that implementations of flutter_motion_sensors must implement.
@@ -34,13 +36,15 @@ abstract class FlutterMotionSensorsPlatform extends PlatformInterface {
   /// Check if the device supports motion sensors
   Future<bool> isMotionSensorAvailable() {
     throw UnimplementedError(
-        'isMotionSensorAvailable() has not been implemented.');
+      'isMotionSensorAvailable() has not been implemented.',
+    );
   }
 
   /// Get the current accelerometer data
   Future<AccelerometerData?> getAccelerometerData() {
     throw UnimplementedError(
-        'getAccelerometerData() has not been implemented.');
+      'getAccelerometerData() has not been implemented.',
+    );
   }
 
   /// Get the current gyroscope data
@@ -56,206 +60,440 @@ abstract class FlutterMotionSensorsPlatform extends PlatformInterface {
   /// Get all available motion sensor data
   Future<MotionSensorData> getAllMotionSensorData() {
     throw UnimplementedError(
-        'getAllMotionSensorData() has not been implemented.');
+      'getAllMotionSensorData() has not been implemented.',
+    );
   }
 
   /// Start listening to accelerometer events
   Stream<AccelerometerData> get accelerometerEvents {
     throw UnimplementedError(
-        'accelerometerEvents getter has not been implemented.');
+      'accelerometerEvents getter has not been implemented.',
+    );
   }
 
   /// Start listening to gyroscope events
   Stream<GyroscopeData> get gyroscopeEvents {
     throw UnimplementedError(
-        'gyroscopeEvents getter has not been implemented.');
+      'gyroscopeEvents getter has not been implemented.',
+    );
   }
 
   /// Start listening to magnetometer events
   Stream<MagnetometerData> get magnetometerEvents {
     throw UnimplementedError(
-        'magnetometerEvents getter has not been implemented.');
+      'magnetometerEvents getter has not been implemented.',
+    );
   }
 
   /// Start listening to all motion sensor events
   Stream<MotionSensorData> get motionSensorEvents {
     throw UnimplementedError(
-        'motionSensorEvents getter has not been implemented.');
+      'motionSensorEvents getter has not been implemented.',
+    );
   }
 }
 
 /// An implementation of [FlutterMotionSensorsPlatform] that uses method channels.
 class MethodChannelFlutterMotionSensors extends FlutterMotionSensorsPlatform {
+  /// Creates a new instance of MethodChannelFlutterMotionSensors.
+  ///
+  /// This constructor initializes the method channel implementation
+  /// for communicating with native platform code.
+  MethodChannelFlutterMotionSensors();
+
   /// The method channel used to interact with the native platform.
   final methodChannel = const MethodChannel('flutter_motion_sensors');
 
   @override
   Future<bool> isMotionSensorAvailable() async {
-    final bool result =
-        await methodChannel.invokeMethod('isMotionSensorAvailable');
-    return result;
+    try {
+      final bool result = await methodChannel.invokeMethod(
+        'isMotionSensorAvailable',
+      );
+      return result;
+    } on PlatformException {
+      // Fallback: sensors_plus is available on all platforms
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
   Future<AccelerometerData?> getAccelerometerData() async {
-    final Map<dynamic, dynamic>? result =
-        await methodChannel.invokeMethod('getAccelerometerData');
-    if (result == null) return null;
+    try {
+      final Map<dynamic, dynamic>? result = await methodChannel.invokeMethod(
+        'getAccelerometerData',
+      );
+      if (result == null) throw PlatformException(code: 'NULL_RESULT');
 
-    return AccelerometerData(
-      x: result['x']?.toDouble() ?? 0.0,
-      y: result['y']?.toDouble() ?? 0.0,
-      z: result['z']?.toDouble() ?? 0.0,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
-    );
+      return AccelerometerData(
+        x: result['x']?.toDouble() ?? 0.0,
+        y: result['y']?.toDouble() ?? 0.0,
+        z: result['z']?.toDouble() ?? 0.0,
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
+      );
+    } on PlatformException {
+      // Fallback to sensors_plus
+      try {
+        final event = await accelerometerEventStream().first;
+        return AccelerometerData(
+          x: event.x,
+          y: event.y,
+          z: event.z,
+          timestamp: DateTime.now(),
+        );
+      } catch (e) {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<GyroscopeData?> getGyroscopeData() async {
-    final Map<dynamic, dynamic>? result =
-        await methodChannel.invokeMethod('getGyroscopeData');
-    if (result == null) return null;
+    try {
+      final Map<dynamic, dynamic>? result = await methodChannel.invokeMethod(
+        'getGyroscopeData',
+      );
+      if (result == null) throw PlatformException(code: 'NULL_RESULT');
 
-    return GyroscopeData(
-      x: result['x']?.toDouble() ?? 0.0,
-      y: result['y']?.toDouble() ?? 0.0,
-      z: result['z']?.toDouble() ?? 0.0,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
-    );
+      return GyroscopeData(
+        x: result['x']?.toDouble() ?? 0.0,
+        y: result['y']?.toDouble() ?? 0.0,
+        z: result['z']?.toDouble() ?? 0.0,
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
+      );
+    } on PlatformException {
+      // Fallback to sensors_plus
+      try {
+        final event = await gyroscopeEventStream().first;
+        return GyroscopeData(
+          x: event.x,
+          y: event.y,
+          z: event.z,
+          timestamp: DateTime.now(),
+        );
+      } catch (e) {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<MagnetometerData?> getMagnetometerData() async {
-    final Map<dynamic, dynamic>? result =
-        await methodChannel.invokeMethod('getMagnetometerData');
-    if (result == null) return null;
+    try {
+      final Map<dynamic, dynamic>? result = await methodChannel.invokeMethod(
+        'getMagnetometerData',
+      );
+      if (result == null) throw PlatformException(code: 'NULL_RESULT');
 
-    return MagnetometerData(
-      x: result['x']?.toDouble() ?? 0.0,
-      y: result['y']?.toDouble() ?? 0.0,
-      z: result['z']?.toDouble() ?? 0.0,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
-    );
+      return MagnetometerData(
+        x: result['x']?.toDouble() ?? 0.0,
+        y: result['y']?.toDouble() ?? 0.0,
+        z: result['z']?.toDouble() ?? 0.0,
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
+      );
+    } on PlatformException {
+      // Fallback to sensors_plus
+      try {
+        final event = await magnetometerEventStream().first;
+        return MagnetometerData(
+          x: event.x,
+          y: event.y,
+          z: event.z,
+          timestamp: DateTime.now(),
+        );
+      } catch (e) {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<MotionSensorData> getAllMotionSensorData() async {
-    final Map<dynamic, dynamic> result =
-        await methodChannel.invokeMethod('getAllMotionSensorData');
+    try {
+      final Map<dynamic, dynamic> result = await methodChannel.invokeMethod(
+        'getAllMotionSensorData',
+      );
 
-    return MotionSensorData(
-      accelerometer: result['accelerometer'] != null
-          ? AccelerometerData(
-              x: result['accelerometer']['x']?.toDouble() ?? 0.0,
-              y: result['accelerometer']['y']?.toDouble() ?? 0.0,
-              z: result['accelerometer']['z']?.toDouble() ?? 0.0,
-              timestamp: DateTime.fromMillisecondsSinceEpoch(
-                  result['accelerometer']['timestamp'] ?? 0),
-            )
-          : null,
-      gyroscope: result['gyroscope'] != null
-          ? GyroscopeData(
-              x: result['gyroscope']['x']?.toDouble() ?? 0.0,
-              y: result['gyroscope']['y']?.toDouble() ?? 0.0,
-              z: result['gyroscope']['z']?.toDouble() ?? 0.0,
-              timestamp: DateTime.fromMillisecondsSinceEpoch(
-                  result['gyroscope']['timestamp'] ?? 0),
-            )
-          : null,
-      magnetometer: result['magnetometer'] != null
-          ? MagnetometerData(
-              x: result['magnetometer']['x']?.toDouble() ?? 0.0,
-              y: result['magnetometer']['y']?.toDouble() ?? 0.0,
-              z: result['magnetometer']['z']?.toDouble() ?? 0.0,
-              timestamp: DateTime.fromMillisecondsSinceEpoch(
-                  result['magnetometer']['timestamp'] ?? 0),
-            )
-          : null,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(result['timestamp'] ?? 0),
-    );
+      return MotionSensorData(
+        accelerometer: result['accelerometer'] != null
+            ? AccelerometerData(
+                x: result['accelerometer']['x']?.toDouble() ?? 0.0,
+                y: result['accelerometer']['y']?.toDouble() ?? 0.0,
+                z: result['accelerometer']['z']?.toDouble() ?? 0.0,
+                timestamp: DateTime.fromMillisecondsSinceEpoch(
+                  result['accelerometer']['timestamp'] ?? 0,
+                ),
+              )
+            : null,
+        gyroscope: result['gyroscope'] != null
+            ? GyroscopeData(
+                x: result['gyroscope']['x']?.toDouble() ?? 0.0,
+                y: result['gyroscope']['y']?.toDouble() ?? 0.0,
+                z: result['gyroscope']['z']?.toDouble() ?? 0.0,
+                timestamp: DateTime.fromMillisecondsSinceEpoch(
+                  result['gyroscope']['timestamp'] ?? 0,
+                ),
+              )
+            : null,
+        magnetometer: result['magnetometer'] != null
+            ? MagnetometerData(
+                x: result['magnetometer']['x']?.toDouble() ?? 0.0,
+                y: result['magnetometer']['y']?.toDouble() ?? 0.0,
+                z: result['magnetometer']['z']?.toDouble() ?? 0.0,
+                timestamp: DateTime.fromMillisecondsSinceEpoch(
+                  result['magnetometer']['timestamp'] ?? 0,
+                ),
+              )
+            : null,
+        timestamp: DateTime.fromMillisecondsSinceEpoch(
+          result['timestamp'] ?? 0,
+        ),
+      );
+    } on PlatformException {
+      // Fallback to sensors_plus
+      try {
+        final accel = await getAccelerometerData();
+        final gyro = await getGyroscopeData();
+        final mag = await getMagnetometerData();
+        return MotionSensorData(
+          accelerometer: accel,
+          gyroscope: gyro,
+          magnetometer: mag,
+          timestamp: DateTime.now(),
+        );
+      } catch (e) {
+        return MotionSensorData(
+          accelerometer: null,
+          gyroscope: null,
+          magnetometer: null,
+          timestamp: DateTime.now(),
+        );
+      }
+    } catch (e) {
+      return MotionSensorData(
+        accelerometer: null,
+        gyroscope: null,
+        magnetometer: null,
+        timestamp: DateTime.now(),
+      );
+    }
   }
 
   @override
   Stream<AccelerometerData> get accelerometerEvents {
-    return const EventChannel('flutter_motion_sensors/accelerometer')
-        .receiveBroadcastStream()
-        .map((dynamic event) {
-      final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
-      return AccelerometerData(
-        x: data['x']?.toDouble() ?? 0.0,
-        y: data['y']?.toDouble() ?? 0.0,
-        z: data['z']?.toDouble() ?? 0.0,
-        timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
-      );
-    });
+    try {
+      return const EventChannel('flutter_motion_sensors/accelerometer')
+          .receiveBroadcastStream()
+          .handleError((error) {
+            // Ignore cancellation errors when switching tabs
+            if (error is PlatformException &&
+                error.code == 'error' &&
+                error.message?.contains('No active stream') == true) {
+              return;
+            }
+            // Re-throw other errors
+            throw error;
+          }, test: (error) => error is PlatformException)
+          .map((dynamic event) {
+            final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
+            return AccelerometerData(
+              x: data['x']?.toDouble() ?? 0.0,
+              y: data['y']?.toDouble() ?? 0.0,
+              z: data['z']?.toDouble() ?? 0.0,
+              timestamp: DateTime.fromMillisecondsSinceEpoch(
+                data['timestamp'] ?? 0,
+              ),
+            );
+          });
+    } catch (e) {
+      // Fallback to sensors_plus
+      return accelerometerEventStream().map((event) {
+        return AccelerometerData(
+          x: event.x,
+          y: event.y,
+          z: event.z,
+          timestamp: DateTime.now(),
+        );
+      });
+    }
   }
 
   @override
   Stream<GyroscopeData> get gyroscopeEvents {
-    return const EventChannel('flutter_motion_sensors/gyroscope')
-        .receiveBroadcastStream()
-        .map((dynamic event) {
-      final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
-      return GyroscopeData(
-        x: data['x']?.toDouble() ?? 0.0,
-        y: data['y']?.toDouble() ?? 0.0,
-        z: data['z']?.toDouble() ?? 0.0,
-        timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
-      );
-    });
+    try {
+      return const EventChannel('flutter_motion_sensors/gyroscope')
+          .receiveBroadcastStream()
+          .handleError((error) {
+            // Ignore cancellation errors when switching tabs
+            if (error is PlatformException &&
+                error.code == 'error' &&
+                error.message?.contains('No active stream') == true) {
+              return;
+            }
+            // Re-throw other errors
+            throw error;
+          }, test: (error) => error is PlatformException)
+          .map((dynamic event) {
+            final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
+            return GyroscopeData(
+              x: data['x']?.toDouble() ?? 0.0,
+              y: data['y']?.toDouble() ?? 0.0,
+              z: data['z']?.toDouble() ?? 0.0,
+              timestamp: DateTime.fromMillisecondsSinceEpoch(
+                data['timestamp'] ?? 0,
+              ),
+            );
+          });
+    } catch (e) {
+      // Fallback to sensors_plus
+      return gyroscopeEventStream().map((event) {
+        return GyroscopeData(
+          x: event.x,
+          y: event.y,
+          z: event.z,
+          timestamp: DateTime.now(),
+        );
+      });
+    }
   }
 
   @override
   Stream<MagnetometerData> get magnetometerEvents {
-    return const EventChannel('flutter_motion_sensors/magnetometer')
-        .receiveBroadcastStream()
-        .map((dynamic event) {
-      final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
-      return MagnetometerData(
-        x: data['x']?.toDouble() ?? 0.0,
-        y: data['y']?.toDouble() ?? 0.0,
-        z: data['z']?.toDouble() ?? 0.0,
-        timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
-      );
-    });
+    try {
+      return const EventChannel('flutter_motion_sensors/magnetometer')
+          .receiveBroadcastStream()
+          .handleError((error) {
+            // Ignore cancellation errors when switching tabs
+            if (error is PlatformException &&
+                error.code == 'error' &&
+                error.message?.contains('No active stream') == true) {
+              return;
+            }
+            // Re-throw other errors
+            throw error;
+          }, test: (error) => error is PlatformException)
+          .map((dynamic event) {
+            final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
+            return MagnetometerData(
+              x: data['x']?.toDouble() ?? 0.0,
+              y: data['y']?.toDouble() ?? 0.0,
+              z: data['z']?.toDouble() ?? 0.0,
+              timestamp: DateTime.fromMillisecondsSinceEpoch(
+                data['timestamp'] ?? 0,
+              ),
+            );
+          });
+    } catch (e) {
+      // Fallback to sensors_plus
+      return magnetometerEventStream().map((event) {
+        return MagnetometerData(
+          x: event.x,
+          y: event.y,
+          z: event.z,
+          timestamp: DateTime.now(),
+        );
+      });
+    }
   }
 
   @override
   Stream<MotionSensorData> get motionSensorEvents {
-    return const EventChannel('flutter_motion_sensors/motion')
-        .receiveBroadcastStream()
-        .map((dynamic event) {
-      final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
-      return MotionSensorData(
-        accelerometer: data['accelerometer'] != null
-            ? AccelerometerData(
-                x: data['accelerometer']['x']?.toDouble() ?? 0.0,
-                y: data['accelerometer']['y']?.toDouble() ?? 0.0,
-                z: data['accelerometer']['z']?.toDouble() ?? 0.0,
-                timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    data['accelerometer']['timestamp'] ?? 0),
-              )
-            : null,
-        gyroscope: data['gyroscope'] != null
-            ? GyroscopeData(
-                x: data['gyroscope']['x']?.toDouble() ?? 0.0,
-                y: data['gyroscope']['y']?.toDouble() ?? 0.0,
-                z: data['gyroscope']['z']?.toDouble() ?? 0.0,
-                timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    data['gyroscope']['timestamp'] ?? 0),
-              )
-            : null,
-        magnetometer: data['magnetometer'] != null
-            ? MagnetometerData(
-                x: data['magnetometer']['x']?.toDouble() ?? 0.0,
-                y: data['magnetometer']['y']?.toDouble() ?? 0.0,
-                z: data['magnetometer']['z']?.toDouble() ?? 0.0,
-                timestamp: DateTime.fromMillisecondsSinceEpoch(
-                    data['magnetometer']['timestamp'] ?? 0),
-              )
-            : null,
-        timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp'] ?? 0),
+    try {
+      return const EventChannel('flutter_motion_sensors/motion')
+          .receiveBroadcastStream()
+          .handleError((error) {
+            // Ignore cancellation errors when switching tabs
+            if (error is PlatformException &&
+                error.code == 'error' &&
+                error.message?.contains('No active stream') == true) {
+              return;
+            }
+            // Re-throw other errors
+            throw error;
+          }, test: (error) => error is PlatformException)
+          .map((dynamic event) {
+            final Map<dynamic, dynamic> data = event as Map<dynamic, dynamic>;
+            return MotionSensorData(
+              accelerometer: data['accelerometer'] != null
+                  ? AccelerometerData(
+                      x: data['accelerometer']['x']?.toDouble() ?? 0.0,
+                      y: data['accelerometer']['y']?.toDouble() ?? 0.0,
+                      z: data['accelerometer']['z']?.toDouble() ?? 0.0,
+                      timestamp: DateTime.fromMillisecondsSinceEpoch(
+                        data['accelerometer']['timestamp'] ?? 0,
+                      ),
+                    )
+                  : null,
+              gyroscope: data['gyroscope'] != null
+                  ? GyroscopeData(
+                      x: data['gyroscope']['x']?.toDouble() ?? 0.0,
+                      y: data['gyroscope']['y']?.toDouble() ?? 0.0,
+                      z: data['gyroscope']['z']?.toDouble() ?? 0.0,
+                      timestamp: DateTime.fromMillisecondsSinceEpoch(
+                        data['gyroscope']['timestamp'] ?? 0,
+                      ),
+                    )
+                  : null,
+              magnetometer: data['magnetometer'] != null
+                  ? MagnetometerData(
+                      x: data['magnetometer']['x']?.toDouble() ?? 0.0,
+                      y: data['magnetometer']['y']?.toDouble() ?? 0.0,
+                      z: data['magnetometer']['z']?.toDouble() ?? 0.0,
+                      timestamp: DateTime.fromMillisecondsSinceEpoch(
+                        data['magnetometer']['timestamp'] ?? 0,
+                      ),
+                    )
+                  : null,
+              timestamp: DateTime.fromMillisecondsSinceEpoch(
+                data['timestamp'] ?? 0,
+              ),
+            );
+          });
+    } catch (e) {
+      // Fallback to sensors_plus
+      return CombineLatestStream.combine3(
+        accelerometerEventStream(),
+        gyroscopeEventStream(),
+        magnetometerEventStream(),
+        (accel, gyro, mag) {
+          final timestamp = DateTime.now();
+          return MotionSensorData(
+            accelerometer: AccelerometerData(
+              x: accel.x,
+              y: accel.y,
+              z: accel.z,
+              timestamp: timestamp,
+            ),
+            gyroscope: GyroscopeData(
+              x: gyro.x,
+              y: gyro.y,
+              z: gyro.z,
+              timestamp: timestamp,
+            ),
+            magnetometer: MagnetometerData(
+              x: mag.x,
+              y: mag.y,
+              z: mag.z,
+              timestamp: timestamp,
+            ),
+            timestamp: timestamp,
+          );
+        },
       );
-    });
+    }
   }
 }

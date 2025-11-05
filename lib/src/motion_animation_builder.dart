@@ -21,23 +21,23 @@ class MotionAnimationBuilder extends StatefulWidget {
 
   /// Builder function that receives the motion sensor controller
   final Widget Function(BuildContext context, MotionSensorController controller)
-      builder;
+  builder;
 
   /// Builder function specifically for accelerometer data
   final Widget Function(BuildContext context, AccelerometerData? data)?
-      accelerometerBuilder;
+  accelerometerBuilder;
 
   /// Builder function specifically for gyroscope data
   final Widget Function(BuildContext context, GyroscopeData? data)?
-      gyroscopeBuilder;
+  gyroscopeBuilder;
 
   /// Builder function specifically for magnetometer data
   final Widget Function(BuildContext context, MagnetometerData? data)?
-      magnetometerBuilder;
+  magnetometerBuilder;
 
   /// Builder function for combined motion sensor data
   final Widget Function(BuildContext context, MotionSensorData? data)?
-      motionBuilder;
+  motionBuilder;
 
   /// Whether to automatically start listening to sensors
   final bool autoStart;
@@ -92,19 +92,25 @@ class _MotionAnimationBuilderState extends State<MotionAnimationBuilder> {
         if (widget.accelerometerBuilder != null &&
             widget.sensorTypes.contains(SensorType.accelerometer)) {
           return widget.accelerometerBuilder!(
-              context, _controller.lastAccelerometerData);
+            context,
+            _controller.lastAccelerometerData,
+          );
         }
 
         if (widget.gyroscopeBuilder != null &&
             widget.sensorTypes.contains(SensorType.gyroscope)) {
           return widget.gyroscopeBuilder!(
-              context, _controller.lastGyroscopeData);
+            context,
+            _controller.lastGyroscopeData,
+          );
         }
 
         if (widget.magnetometerBuilder != null &&
             widget.sensorTypes.contains(SensorType.magnetometer)) {
           return widget.magnetometerBuilder!(
-              context, _controller.lastMagnetometerData);
+            context,
+            _controller.lastMagnetometerData,
+          );
         }
 
         if (widget.motionBuilder != null &&
