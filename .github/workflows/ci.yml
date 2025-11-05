@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Verify formatting
+        run: dart format --set-exit-if-changed lib/ example/lib/
+      - name: Analyze code
+        run: flutter analyze lib/ example/lib/
+      - name: Run tests
+        run: flutter test
+      - name: Check commit messages (on PR)
+        if: github.event_name == 'pull_request'
+        uses: wagoid/commitlint-github-action@v5
+
+  pana:
+    name: Pana Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          channel: 'stable'
+      - name: Install pana
+        run: dart pub global activate pana
+      - name: Run pana
+        run: dart pub global run pana --no-warning
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-android:
+    name: Build Android Example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          channel: 'stable'
+      - name: Install dependencies
+        run: |
+          cd example
+          flutter pub get
+      - name: Build Android APK
+        run: |
+          cd example
+          flutter build apk --debug
+        continue-on-error: true
+
+  build-ios:
+    name: Build iOS Example
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          channel: 'stable'
+      - name: Install dependencies
+        run: |
+          cd example
+          flutter pub get
+      - name: Build iOS
+        run: |
+          cd example
+          flutter build ios --no-codesign --debug
+        continue-on-error: true
+
+  build-web:
+    name: Build Web Example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          channel: 'stable'
+      - name: Install dependencies
+        run: |
+          cd example
+          flutter pub get
+      - name: Build Web
+        run: |
+          cd example
+          flutter build web --release
+        continue-on-error: true
+
