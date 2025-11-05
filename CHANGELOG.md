@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.1.0] - 2025-11-05
+
+### Added
+- Comprehensive example app with multiple demos showcasing all features
+- Error handling for stream cancellation to prevent exceptions when switching tabs
+- Improved status messages in Custom Sensor Types demo
+- Enhanced logging in Android native implementation
+- Added funding information in pubspec.yaml
+- Added package topics for better discoverability
+
+### Changed
+- Updated SDK requirement to >=3.8.0
+- Updated Flutter requirement to >=3.32.0
+- Improved stream lifecycle management in Android and iOS implementations
+- Enhanced error suppression for EventChannel cancellation errors
+- Updated Android namespace to com.github.dhia_bechattaoui
+
+### Fixed
+- Fixed stream cancellation errors when switching between tabs in TabBarView
+- Fixed button state updates in Stream Demo page
+- Fixed Swift compilation errors in iOS plugin
+- Fixed missing flutter_web_plugins dependency
+- Fixed formatting issues to achieve 160/160 pana score
+- Fixed missing documentation for constructors
+- Fixed Android sensor listener registration logging
+
 ## [0.0.2] - 2025-08-30
 
 ### Added
@@ -28,8 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - **Added proper permission handling** for motion sensor access on iOS/macOS
-
-## [0.0.1] - 2024-12-19
 
 ## [0.0.1] - 2024-12-19
 
