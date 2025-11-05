@@ -5,6 +5,10 @@
 
 Device motion and orientation-based animations for Flutter. Supports iOS, Android, Web, Windows, macOS, and Linux with WASM compatibility. **Full Swift Package Manager (SPM) support for iOS and macOS.**
 
+## Example
+
+<img src="https://github.com/dhia_bechattaoui/flutter_motion_sensors/blob/main/assets/example.gif?raw=true" width="300" alt="Example GIF">
+
 ## Features
 
 - 🌍 **Cross-platform support**: iOS, Android, Web, Windows, macOS, Linux
@@ -23,7 +27,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_motion_sensors: ^0.0.2
+  flutter_motion_sensors: ^0.1.0
 ```
 
 ### Basic Usage
