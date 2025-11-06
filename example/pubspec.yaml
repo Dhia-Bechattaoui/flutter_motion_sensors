@@ -2,24 +2,23 @@ name: flutter_motion_sensors_example
 description: Example app for flutter_motion_sensors package
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=3.10.0"
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_motion_sensors:
     path: ../
-    version: ^0.0.2
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

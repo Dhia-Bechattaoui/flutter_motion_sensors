@@ -27,7 +27,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_motion_sensors: ^0.1.0
+  flutter_motion_sensors: ^0.1.1
 ```
 
 ### Basic Usage

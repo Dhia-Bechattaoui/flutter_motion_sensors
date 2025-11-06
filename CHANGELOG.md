@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed formatting issues to achieve 160/160 pana score
 - Fixed missing documentation for constructors
 - Fixed Android sensor listener registration logging
+- Fixed dependency version constraints in example app to match main package version (0.1.0)
+- Updated example app dependencies (cupertino_icons, flutter_lints) to compatible versions
+- Aligned example app Flutter version requirement with main package (>=3.32.0)
 
 ## [0.0.2] - 2025-08-30
 
