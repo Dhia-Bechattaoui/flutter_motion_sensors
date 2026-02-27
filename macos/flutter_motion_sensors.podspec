@@ -14,7 +14,7 @@ Device motion and orientation-based animations for Flutter. Supports iOS, Androi
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
-  s.dependency 'Flutter'
+  s.dependency 'FlutterMacOS'
   s.platform = :osx, '10.15'
 
   # Flutter.framework does not contain a i386 slice.
