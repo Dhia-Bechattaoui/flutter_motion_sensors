@@ -11,7 +11,7 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "flutter_motion_sensors",
+            name: "flutter-motion-sensors",
             targets: ["flutter_motion_sensors"]),
     ],
     dependencies: [
@@ -21,16 +21,7 @@ let package = Package(
         .target(
             name: "flutter_motion_sensors",
             dependencies: [],
-            path: "../../lib",
-            sources: ["src"],
-            resources: [
-                .process("src")
-            ]
-        ),
-        .testTarget(
-            name: "flutter_motion_sensorsTests",
-            dependencies: ["flutter_motion_sensors"],
-            path: "../../test"
+            path: "Sources/flutter_motion_sensors"
         ),
     ]
 )
