@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-03-03
+
+### Fixed
+- Fixed Swift Package Manager (SPM) target paths and product name for iOS and macOS.
+- Removed duplicated Swift files from `Classes/` directory for proper CocoaPods compatibility.
+
+## [0.1.1]
+
+### Fixed
+- Minor bug fixes and improvements.
+
 ## [0.1.0] - 2025-11-05
 
 ### Added

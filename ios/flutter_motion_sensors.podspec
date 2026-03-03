@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_motion_sensors'
-  s.version          = '0.0.2'
+  s.version          = '0.1.2'
   s.summary          = 'Device motion and orientation-based animations for Flutter'
   s.description      = <<-DESC
 Device motion and orientation-based animations for Flutter. Supports iOS, Android, Web, Windows, macOS, and Linux with WASM compatibility.
