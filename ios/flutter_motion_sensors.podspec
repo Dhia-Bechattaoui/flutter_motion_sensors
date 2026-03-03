@@ -13,7 +13,7 @@ Device motion and orientation-based animations for Flutter. Supports iOS, Androi
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
+  s.source_files     = 'flutter_motion_sensors/Sources/flutter_motion_sensors/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '12.0'
 
